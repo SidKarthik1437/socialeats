@@ -11,6 +11,12 @@ import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
 import { Users } from './collections/Users'
+import { Cities } from './collections/Cities'
+import { Spots } from './collections/Spots'
+import { Likes } from './collections/Likes'
+import { Comments } from './collections/Comments'
+import { Saves } from './collections/Saves'
+import { InfluencerTags } from './collections/InfluencerTags'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
 import { plugins } from './plugins'
@@ -22,6 +28,7 @@ const dirname = path.dirname(filename)
 
 export default buildConfig({
   admin: {
+    
     components: {
       // The `BeforeLogin` component renders a message that you see while logging into your admin panel.
       // Feel free to delete this at any time. Simply remove the line below.
@@ -62,7 +69,7 @@ export default buildConfig({
   db: mongooseAdapter({
     url: process.env.DATABASE_URI || '',
   }),
-  collections: [Pages, Posts, Media, Categories, Users],
+  collections: [Pages, Posts, Media, Categories, Users, Cities, Spots, Likes, Comments, Saves, InfluencerTags],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],
   plugins: [

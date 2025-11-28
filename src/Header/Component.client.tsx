@@ -8,6 +8,7 @@ import type { Header } from '@/payload-types'
 
 import { Logo } from '@/components/Logo/Logo'
 import { HeaderNav } from './Nav'
+import { AddSpotForm } from '@/components/AddSpotForm'
 
 interface HeaderClientProps {
   data: Header
@@ -35,7 +36,10 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
         <Link href="/">
           <Logo loading="eager" priority="high" className="invert dark:invert-0" />
         </Link>
-        <HeaderNav data={data} />
+        <div className="flex items-center gap-4">
+          <HeaderNav data={data} />
+          <AddSpotForm />
+        </div>
       </div>
     </header>
   )

@@ -72,6 +72,12 @@ export interface Config {
     media: Media;
     categories: Category;
     users: User;
+    cities: City;
+    spots: Spot;
+    likes: Like;
+    comments: Comment;
+    saves: Save;
+    'influencer-tags': InfluencerTag;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -88,6 +94,12 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
+    cities: CitiesSelect<false> | CitiesSelect<true>;
+    spots: SpotsSelect<false> | SpotsSelect<true>;
+    likes: LikesSelect<false> | LikesSelect<true>;
+    comments: CommentsSelect<false> | CommentsSelect<true>;
+    saves: SavesSelect<false> | SavesSelect<true>;
+    'influencer-tags': InfluencerTagsSelect<false> | InfluencerTagsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -382,7 +394,11 @@ export interface Category {
  */
 export interface User {
   id: string;
-  name?: string | null;
+  displayName: string;
+  handle: string;
+  profileImage?: (string | null) | Media;
+  role: 'user' | 'influencer' | 'admin';
+  isVerified?: boolean | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -745,6 +761,105 @@ export interface Form {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "cities".
+ */
+export interface City {
+  id: string;
+  name: string;
+  slug: string;
+  country: string;
+  /**
+   * @minItems 2
+   * @maxItems 2
+   */
+  coordinates: [number, number];
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "spots".
+ */
+export interface Spot {
+  id: string;
+  name: string;
+  heroMedia: string | Media;
+  galleryMedia?:
+    | {
+        media?: (string | null) | Media;
+        id?: string | null;
+      }[]
+    | null;
+  menuMedia?:
+    | {
+        media?: (string | null) | Media;
+        id?: string | null;
+      }[]
+    | null;
+  city: string | City;
+  /**
+   * @minItems 2
+   * @maxItems 2
+   */
+  location: [number, number];
+  address?: string | null;
+  mustTryItem: string;
+  credScore?: number | null;
+  createdBy?: (string | null) | User;
+  status?: ('published' | 'draft' | 'archived') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "likes".
+ */
+export interface Like {
+  id: string;
+  user: string | User;
+  spot: string | Spot;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "comments".
+ */
+export interface Comment {
+  id: string;
+  user: string | User;
+  spot: string | Spot;
+  commentText?: string | null;
+  media?: (string | null) | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "saves".
+ */
+export interface Save {
+  id: string;
+  user: string | User;
+  spot: string | Spot;
+  listName?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "influencer-tags".
+ */
+export interface InfluencerTag {
+  id: string;
+  user: string | User;
+  spot: string | Spot;
+  isVerifiedTag?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -935,6 +1050,30 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'users';
         value: string | User;
+      } | null)
+    | ({
+        relationTo: 'cities';
+        value: string | City;
+      } | null)
+    | ({
+        relationTo: 'spots';
+        value: string | Spot;
+      } | null)
+    | ({
+        relationTo: 'likes';
+        value: string | Like;
+      } | null)
+    | ({
+        relationTo: 'comments';
+        value: string | Comment;
+      } | null)
+    | ({
+        relationTo: 'saves';
+        value: string | Save;
+      } | null)
+    | ({
+        relationTo: 'influencer-tags';
+        value: string | InfluencerTag;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -1282,7 +1421,11 @@ export interface CategoriesSelect<T extends boolean = true> {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
-  name?: T;
+  displayName?: T;
+  handle?: T;
+  profileImage?: T;
+  role?: T;
+  isVerified?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -1299,6 +1442,91 @@ export interface UsersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "cities_select".
+ */
+export interface CitiesSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  country?: T;
+  coordinates?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "spots_select".
+ */
+export interface SpotsSelect<T extends boolean = true> {
+  name?: T;
+  heroMedia?: T;
+  galleryMedia?:
+    | T
+    | {
+        media?: T;
+        id?: T;
+      };
+  menuMedia?:
+    | T
+    | {
+        media?: T;
+        id?: T;
+      };
+  city?: T;
+  location?: T;
+  address?: T;
+  mustTryItem?: T;
+  credScore?: T;
+  createdBy?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "likes_select".
+ */
+export interface LikesSelect<T extends boolean = true> {
+  user?: T;
+  spot?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "comments_select".
+ */
+export interface CommentsSelect<T extends boolean = true> {
+  user?: T;
+  spot?: T;
+  commentText?: T;
+  media?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "saves_select".
+ */
+export interface SavesSelect<T extends boolean = true> {
+  user?: T;
+  spot?: T;
+  listName?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "influencer-tags_select".
+ */
+export interface InfluencerTagsSelect<T extends boolean = true> {
+  user?: T;
+  spot?: T;
+  isVerifiedTag?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

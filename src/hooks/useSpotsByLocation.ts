@@ -16,7 +16,7 @@ const fetchSpotsByLocation = async (bounds: LngLatBounds) => {
           bounds.getNorthWest().toArray(),
         ],
       ],
-    })}&limit=1000`, // Adjust limit as needed
+    })}&limit=1000&depth=1`, // Adjust limit as needed
   )
   const data = await response.json()
   return data.docs
@@ -25,7 +25,7 @@ const fetchSpotsByLocation = async (bounds: LngLatBounds) => {
 export const useSpotsByLocation = (bounds: LngLatBounds | null) => {
   return useQuery({
     queryKey: ['spots', bounds?.toString()],
-    queryFn: () => fetchSpotsByLocation(bounds),
+    queryFn: () => fetchSpotsByLocation(bounds as LngLatBounds),
     enabled: !!bounds,
   })
 }

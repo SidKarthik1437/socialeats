@@ -21,6 +21,21 @@ export const Categories: CollectionConfig = {
       type: 'text',
       required: true,
     },
+    {
+      name: 'type',
+      type: 'select',
+      options: [
+        { label: 'Cuisine', value: 'cuisine' },
+        { label: 'Establishment', value: 'establishment' },
+        { label: 'Vibe', value: 'vibe' },
+      ],
+      required: true,
+      defaultValue: 'establishment',
+    },
+    {
+      name: 'emoji',
+      type: 'text',
+    },
     slugField({
       position: undefined,
     }),

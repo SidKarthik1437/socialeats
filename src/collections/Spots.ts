@@ -71,6 +71,12 @@ export const Spots: CollectionConfig = {
       required: true,
     },
     {
+      name: 'categories',
+      type: 'relationship',
+      relationTo: 'categories',
+      hasMany: true,
+    },
+    {
       name: 'credScore',
       type: 'number',
       defaultValue: 0,
@@ -85,7 +91,7 @@ export const Spots: CollectionConfig = {
       admin: {
         readOnly: true,
       },
-      defaultValue: ({ user }) => user.id,
+      defaultValue: ({ user }) => user?.id,
     },
     {
       name: 'status',

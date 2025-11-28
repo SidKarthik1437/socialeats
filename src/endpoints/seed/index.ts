@@ -102,9 +102,11 @@ export const seed = async ({
     payload.create({
       collection: 'users',
       data: {
-        name: 'Demo Author',
+        displayName: 'Demo Author',
         email: 'demo-author@example.com',
         password: 'password',
+        handle: 'demo-author',
+        role: 'admin',
       },
     }),
     payload.create({
@@ -133,6 +135,7 @@ export const seed = async ({
         data: {
           title: category,
           slug: category,
+          type: 'vibe',
         },
       }),
     ),

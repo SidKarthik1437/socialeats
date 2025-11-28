@@ -50,7 +50,7 @@ export async function recalculateCredScore(spotId: string, payload: Payload): Pr
     })
 
     payload.logger.info(`Successfully recalculated CredScore for Spot ID ${spotId}. New score: ${credScore}`)
-  } catch (error) {
-    payload.logger.error(`Error recalculating CredScore for Spot ID ${spotId}: ${error.message}`)
+  } catch (error: unknown) {
+    payload.logger.error(`Error recalculating CredScore for Spot ID ${spotId}: ${(error as Error).message}`)
   }
 }

@@ -2,22 +2,20 @@
 
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { AnimatePresence, motion } from 'framer-motion'
-import { useSnapCarousel } from 'react-snap-carousel'
 import { Spot } from '@/payload-types'
 import { useEffect } from 'react'
 import { SpotCard } from '@/components/SpotCard'
+import { useInView } from 'react-intersection-observer'
 
-const fetchSpots = async ({ pageParam = 1, queryKey }) => {
+const fetchSpots = async ({ pageParam = 1, queryKey }: any) => {
   const [_key, city] = queryKey
-  // NOTE: This assumes you have an API endpoint for spots that supports pagination and filtering by city.
-  // You might need to adjust the URL based on your actual API structure.
-  const response = await fetch(`/api/spots?where[city][equals]=${city}&page=${pageParam}&limit=10&sort=-credScore`)
+  const response = await fetch(`/api/spots?where[city][equals]=${city}&page=${pageParam}&limit=10&sort=-credScore&depth=1`)
   const data = await response.json()
   return data
 }
 
-export const DiscoveryFeed = ({ initialSpots, city }) => {
-  const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
+export const DiscoveryFeed = ({ initialSpots, city }: { initialSpots: any, city: string }) => {
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
     queryKey: ['spots', city],
     queryFn: fetchSpots,
     initialPageParam: 1,
@@ -27,33 +25,38 @@ export const DiscoveryFeed = ({ initialSpots, city }) => {
 
   const spots = data?.pages.flatMap((page) => page.docs) || []
 
-  const { scrollRef, activePageIndex } = useSnapCarousel()
+  const { ref, inView } = useInView()
 
-  // Fetch more spots when the user is near the end of the list
   useEffect(() => {
-    if (activePageIndex >= spots.length - 3 && hasNextPage) {
+    if (inView && hasNextPage) {
       fetchNextPage()
     }
-  }, [activePageIndex, hasNextPage, fetchNextPage, spots.length])
+  }, [inView, hasNextPage, fetchNextPage])
 
   return (
-    <div className="relative h-screen w-full overflow-hidden snap-y snap-mandatory">
-      <ul ref={scrollRef} className="h-full w-full">
+    <div className="w-full min-h-screen bg-zinc-950 p-4">
+       {/* Masonry Layout using CSS Columns */}
+      <div className="columns-1 md:columns-2 lg:columns-3 gap-4 space-y-4">
         <AnimatePresence>
           {spots.map((spot: Spot) => (
-            <motion.li
+            <motion.div
               key={spot.id}
-              className="h-full w-full flex items-center justify-center snap-start"
-              initial={{ opacity: 0, y: 300 }}
+              className="break-inside-avoid mb-4"
+              initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -300 }}
+              exit={{ opacity: 0 }}
               transition={{ duration: 0.5 }}
             >
               <SpotCard spot={spot} />
-            </motion.li>
+            </motion.div>
           ))}
         </AnimatePresence>
-      </ul>
+      </div>
+
+      {/* Infinite Scroll Trigger */}
+      <div ref={ref} className="h-20 w-full flex items-center justify-center text-zinc-500">
+          {isFetchingNextPage && <span className="animate-pulse">Loading more spots...</span>}
+      </div>
     </div>
   )
 }

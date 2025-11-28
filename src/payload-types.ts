@@ -371,6 +371,8 @@ export interface Media {
 export interface Category {
   id: string;
   title: string;
+  type: 'cuisine' | 'establishment' | 'vibe';
+  emoji?: string | null;
   /**
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
@@ -804,6 +806,7 @@ export interface Spot {
   location: [number, number];
   address?: string | null;
   mustTryItem: string;
+  categories?: (string | Category)[] | null;
   credScore?: number | null;
   createdBy?: (string | null) | User;
   status?: ('published' | 'draft' | 'archived') | null;
@@ -1402,6 +1405,8 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface CategoriesSelect<T extends boolean = true> {
   title?: T;
+  type?: T;
+  emoji?: T;
   generateSlug?: T;
   slug?: T;
   parent?: T;
@@ -1478,6 +1483,7 @@ export interface SpotsSelect<T extends boolean = true> {
   location?: T;
   address?: T;
   mustTryItem?: T;
+  categories?: T;
   credScore?: T;
   createdBy?: T;
   status?: T;

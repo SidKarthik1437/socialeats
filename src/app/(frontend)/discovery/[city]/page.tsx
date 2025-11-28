@@ -4,11 +4,11 @@ import { getPayload } from 'payload'
 import { notFound } from 'next/navigation'
 
 type Props = {
-  params: { city: string }
+  params: Promise<{ city: string }>
 }
 
 export default async function DiscoveryPage({ params }: Props) {
-  const { city: citySlug } = params
+  const { city: citySlug } = await params
   const payload = await getPayload({ config: configPromise })
 
   // Find the city to get its ID

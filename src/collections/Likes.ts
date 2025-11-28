@@ -1,18 +1,17 @@
-import type { CollectionConfig } from 'payload'
-import type { AfterChangeHook, AfterDeleteHook } from 'payload/dist/collections/config/types'
+import type { CollectionConfig, CollectionAfterChangeHook, CollectionAfterDeleteHook } from 'payload'
 
 import { anyone } from '../access/anyone'
 import { authenticated } from '../access/authenticated'
 import { userIsOwnerOrAdmin } from '../access/userIsOwnerOrAdmin'
 import { recalculateCredScore } from '../utilities/recalculateCredScore'
 
-const recalculateSpotCredScore: AfterChangeHook = async ({ doc, req }) => {
+const recalculateSpotCredScore: CollectionAfterChangeHook = async ({ doc, req }) => {
   if (doc.spot) {
     await recalculateCredScore(doc.spot, req.payload)
   }
 }
 
-const recalculateSpotCredScoreAfterDelete: AfterDeleteHook = async ({ doc, req }) => {
+const recalculateSpotCredScoreAfterDelete: CollectionAfterDeleteHook = async ({ doc, req }) => {
   if (doc.spot) {
     await recalculateCredScore(doc.spot, req.payload)
   }
@@ -40,7 +39,7 @@ export const Likes: CollectionConfig = {
       admin: {
         readOnly: true,
       },
-      defaultValue: ({ user }) => user.id,
+      defaultValue: ({ user }) => user?.id,
     },
     {
       name: 'spot',
